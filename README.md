@@ -145,29 +145,17 @@ Before any threshold change, we replayed the detector offline on saved RGB-D sna
 
 ## Videos
 
-<!--
-  Upload: open this README in the GitHub web editor and 
-https://github.com/user-attachments/assets/933a80d7-ff48-43ea-b697-b50a5978ce19
-
-
-https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
-
-
+**Click-to-grab and click-to-place, real arm.** Clicking a detected block picks it up, and clicking a target places or stacks it. Clicks the arm cannot reach are refused without moving.
 
 https://github.com/user-attachments/assets/55d9aa61-5be3-4df9-b780-e72211fe7a6d
 
- each .mp4 from the videos folder onto its line below.
-  GitHub replaces it with a user-attachments link that plays inline. Then delete these comments.
--->
-
-**Click-to-grab and click-to-place, real arm.** Clicking a detected block picks it up, and clicking a target places or stacks it. Clicks the arm cannot reach are refused without moving.
-<!-- drag click_workspace.mp4 here -->
-
 **Click-to-grab, control-station view.**
-<!-- drag click_screen.mp4 here -->
+
+https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
 
 **Extrinsic calibration.** The camera is re-aimed on its bracket, then Calibrate squares the top-down workspace view up again.
-<!-- drag calibration.mp4 here -->
+
+https://github.com/user-attachments/assets/933a80d7-ff48-43ea-b697-b50a5978ce19
 
 **Teach-and-repeat.** A 25-waypoint, three-block stack recorded by hand-guiding the arm, then replayed: [YouTube](https://youtube.com/shorts/VigqkL3qs3I).
 
