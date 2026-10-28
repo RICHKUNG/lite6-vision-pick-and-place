@@ -28,11 +28,40 @@ On competition day the system ran **all four events at the hardest level (3)**, 
 
 ## Highlights
 
-- **Verified kinematics.** Forward kinematics in both Denavit–Hartenberg and product-of-exponentials form. The two agree to 10⁻¹¹ mm, and both agree with the vendor to 2.1 mm on average.
-- **Closed-form IK with an explicit branch policy.** A geometric solver uses wrist-center decoupling and a deterministic rule for elbow, base, wrist and singularity cases. It round-trips **all 500** random test poses to floating-point precision. A damped least-squares solver serves as a numerical cross-check.
-- **Calibration that fixes the sensor itself.** Extrinsics come from four AprilTags (0.3 px reprojection RMS). We traced misplaced block outlines to the L515's **own depth–color misregistration (up to 10 px)** and modeled it from the edges of 235 blocks, which brought the residual to about 2 px. A per-pixel depth-bias surface is fitted at every calibration.
-- **A detector that works on height, not color.** Shadows, glare and the printed grid change the color image but not the height map. Nine geometric and photometric tests reject distractors. On a 52-block test board it found **50 blocks with 0 false positives** and a **4.4 mm** mean position error.
-- **Plan before moving.** Every pick and place is solved in full before the arm moves, so an unreachable target leaves the arm still. Vertical descents are checked with FK and subdivided until sideways drift is under 1.5 mm. A failed move never opens a gripper that is holding a block.
+<table>
+  <tr>
+    <td width="46%"><img src="docs/media/detector_stages.jpg" alt="Detector stages: top-down RGB, height above the table, height mask with the arm base removed, and the top faces kept" width="100%"></td>
+    <td><b>A detector that works on height, not color.</b><br>Shadows, glare and the printed grid change the color image but not the height map. Nine geometric and photometric tests reject distractors such as the hand and phone here. On a 52-block test board it found <b>50 blocks with 0 false positives</b> and a <b>4.4 mm</b> mean position error.</td>
+  </tr>
+  <tr>
+    <td width="46%"><img src="docs/media/grid_projection.jpg" alt="The board's 50 mm grid projected into the image through the calibrated camera model" width="100%"></td>
+    <td><b>Calibration that fixes the sensor itself.</b><br>Extrinsics come from four AprilTags (0.3 px reprojection RMS); the projected grid stays on the printed lines even in the far corners. We traced misplaced block outlines to the L515's <b>own depth–color misregistration (up to 10 px)</b> and modeled it from the edges of 235 blocks, bringing the residual to about 2 px.</td>
+  </tr>
+  <tr>
+    <td width="46%"><img src="docs/media/ik_wrist_triangle.png" alt="Wrist center and the two-link triangle used to solve q2 and q3" width="100%"></td>
+    <td><b>Verified kinematics and closed-form IK.</b><br>DH and product-of-exponentials FK agree to 10⁻¹¹ mm, and with the vendor to 2.1 mm on average. A geometric IK solver with a deterministic branch and singularity policy round-trips <b>all 500</b> random test poses to floating-point precision, cross-checked by a damped least-squares solver.</td>
+  </tr>
+  <tr>
+    <td width="46%"><img src="docs/media/reachability.png" alt="Top-down grasp reachability map for a 38 mm block" width="100%"></td>
+    <td><b>Plan before moving.</b><br>Every pick and place is solved in full before the arm moves, so an unreachable target leaves the arm still. Vertical descents are checked with FK and subdivided until sideways drift is under 1.5 mm, and a failed move never opens a gripper that is holding a block.</td>
+  </tr>
+</table>
+
+## Videos
+
+**Click-to-grab and click-to-place, real arm.** Clicking a detected block picks it up, and clicking a target places or stacks it. Clicks the arm cannot reach are refused without moving.
+
+https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
+
+**Click-to-grab, control-station view.**
+
+https://github.com/user-attachments/assets/55d9aa61-5be3-4df9-b780-e72211fe7a6d
+
+**Extrinsic calibration.** The camera is re-aimed on its bracket, then Calibrate squares the top-down workspace view up again.
+
+https://github.com/user-attachments/assets/933a80d7-ff48-43ea-b697-b50a5978ce19
+
+**Teach-and-repeat.** A 25-waypoint, three-block stack recorded by hand-guiding the arm, then replayed: [YouTube](https://youtube.com/shorts/VigqkL3qs3I).
 
 ## System overview
 
@@ -67,9 +96,8 @@ All four events share one loop: **look** (merge five detector runs from a home p
 ## Kinematics
 
 <p align="center">
-  <img src="docs/media/dh_frames.png" alt="DH frames on the Lite 6 with link lengths" width="48%">
-  <img src="docs/media/ik_wrist_triangle.png" alt="Side view: wrist center and the two-link triangle used to solve q2 and q3" width="48%">
-  <br><sub>Left: standard DH frames. Right: the wrist center (one d₆ back from the tool point) and the two-link triangle that sets q₂ and q₃.</sub>
+  <img src="docs/media/dh_frames.png" alt="DH frames on the Lite 6 with link lengths" width="560">
+  <br><sub>Standard DH frames on the Lite 6, with link lengths.</sub>
 </p>
 
 **Forward kinematics, verified on 500 random configurations.**
@@ -92,17 +120,7 @@ The 2 mm residual against the vendor is smooth: it does not grow with any joint,
 
 Along vertical descents, radial sweeps and yaw sweeps, no joint changed by more than 5° between neighboring targets. The numerical solver (Levenberg–Marquardt) solved 457 of the 500 poses. All 43 failures were local minima that the geometric solver solved, which is why the numerical solver is only a fallback.
 
-<p align="center">
-  <img src="docs/media/reachability.png" alt="Top-down grasp reachability map for a 38 mm block" width="380">
-  <br><sub>Top-down grasp reachability for a 38 mm block, with each IK solution checked for collisions in MuJoCo. Reach and the arm base, not the J5 limit, bound the workspace.</sub>
-</p>
-
 ## Camera calibration
-
-<p align="center">
-  <img src="docs/media/grid_projection.jpg" alt="The board's 50 mm grid projected into the camera image through the calibrated intrinsics and extrinsics" width="640">
-  <br><sub>The board's 50 mm grid (yellow) projected through K and the AprilTag extrinsics. It stays on the printed lines, including in the corners far from the tags.</sub>
-</p>
 
 - **Intrinsics.** We ran three checkerboard calibrations. The run with the board slid flat had the *lowest* reprojection error (0.10 px), yet its focal lengths were 43–52% off, because a flat board cannot separate focal length from distance. The two runs with the board tilted through the volume matched the factory values within 0.7%, so we use the factory K.
 - **Extrinsics.** `solvePnP` on four AprilTags. We re-run it every session: the tag RMS stayed at 0.27–0.31 px even when the camera had shifted 28 mm between sessions. A hand-measured matrix (tape measure plus a phone IMU for the tilt) agreed within 1.4° and 43 mm, which is fine as a sanity check but not accurate enough for grasping.
@@ -110,11 +128,6 @@ Along vertical descents, radial sweeps and yaw sweeps, no joint changed by more 
 - **Depth bias.** At calibration time the extrinsics give the true range along every table ray. We fit a quadratic surface to the measured-minus-true range, using a median gate and 3σ clipping to reject blocks and the arm.
 
 ## Block detection
-
-<p align="center">
-  <img src="docs/media/detector_stages.jpg" alt="Detector stages: top-down RGB, height above table, height mask with the arm base removed, and the top faces kept for measurement" width="760">
-  <br><sub>Detector stages: (a) RGB warped top-down, (b) height above the fitted table plane, (c) pixels 15–124 mm high with the arm base removed, (d) top faces kept for measurement.</sub>
-</p>
 
 The detector warps the registered depth into a top-down view and fits the table plane at the four tags. It then thresholds by height and keeps each region's top face. Color is read last, from the median hue of the eroded top face. Each candidate then has to pass nine rejection tests: area, outline, flat top, level top, ramp ring, shape, size, stack height and single color. Every rejected region is drawn in the GUI with the name of the test it failed, and that is how we tuned the thresholds.
 
@@ -142,22 +155,6 @@ Before any threshold change, we replayed the detector offline on saved RGB-D sna
   <img src="docs/media/rejection_margins.png" alt="Margin of each rejection test for real blocks and distractors" width="560">
 </p>
 </details>
-
-## Videos
-
-**Click-to-grab and click-to-place, real arm.** Clicking a detected block picks it up, and clicking a target places or stacks it. Clicks the arm cannot reach are refused without moving.
-
-https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
-
-**Click-to-grab, control-station view.**
-
-https://github.com/user-attachments/assets/55d9aa61-5be3-4df9-b780-e72211fe7a6d
-
-**Extrinsic calibration.** The camera is re-aimed on its bracket, then Calibrate squares the top-down workspace view up again.
-
-https://github.com/user-attachments/assets/933a80d7-ff48-43ea-b697-b50a5978ce19
-
-**Teach-and-repeat.** A 25-waypoint, three-block stack recorded by hand-guiding the arm, then replayed: [YouTube](https://youtube.com/shorts/VigqkL3qs3I).
 
 ## Limitations and next steps
 
