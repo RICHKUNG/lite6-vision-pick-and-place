@@ -146,7 +146,17 @@ Before any threshold change, we replayed the detector offline on saved RGB-D sna
 ## Videos
 
 <!--
-  Upload: open this README in the GitHub web editor and drag each .mp4 from the videos folder onto its line below.
+  Upload: open this README in the GitHub web editor and 
+https://github.com/user-attachments/assets/933a80d7-ff48-43ea-b697-b50a5978ce19
+
+
+https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
+
+
+
+https://github.com/user-attachments/assets/55d9aa61-5be3-4df9-b780-e72211fe7a6d
+
+ each .mp4 from the videos folder onto its line below.
   GitHub replaces it with a user-attachments link that plays inline. Then delete these comments.
 -->
 
