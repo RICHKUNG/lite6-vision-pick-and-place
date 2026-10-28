@@ -147,11 +147,11 @@ Before any threshold change, we replayed the detector offline on saved RGB-D sna
 
 **Click-to-grab and click-to-place, real arm.** Clicking a detected block picks it up, and clicking a target places or stacks it. Clicks the arm cannot reach are refused without moving.
 
-https://github.com/user-attachments/assets/55d9aa61-5be3-4df9-b780-e72211fe7a6d
+https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
 
 **Click-to-grab, control-station view.**
 
-https://github.com/user-attachments/assets/5714f4a9-d809-403a-baaa-9f08d2093be0
+https://github.com/user-attachments/assets/55d9aa61-5be3-4df9-b780-e72211fe7a6d
 
 **Extrinsic calibration.** The camera is re-aimed on its bracket, then Calibrate squares the top-down workspace view up again.
 
